@@ -1,0 +1,103 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>File Sharing Website</title>
+</head>
+<body>
+  <h1>File Sharing Website</h1>
+  <form id="upload-form" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <input type="submit" value="Upload" />
+  </form>
+  <div id="file-info"></div>
+  <div id="qr-code"></div>
+
+  <script src="/src/first.js"></script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCao776w2haJn2rlqxMoBfIo1jMuZNrH_8",
+  authDomain: "filesharing-d534c.firebaseapp.com",
+  projectId: "filesharing-d534c",
+  storageBucket: "filesharing-d534c.appspot.com",
+  messagingSenderId: "351215577513",
+  appId: "1:351215577513:web:6a2ca62f7aeaa99073bcb8",
+  measurementId: "G-PRSQMCHQB2"
+
+    };
+    firebase.initializeApp(firebaseConfig);
+    const storageRef = firebase.storage().ref();
+
+  </script>
+</body>
+</html> -->
+
+
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Sharing Website</title>
+</head>
+<body>
+  <h1>File Sharing Website</h1>
+  <form id="upload-form" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <input type="submit" value="Upload" />
+  </form>
+  <div id="file-info"></div>
+  <div id="qr-code"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js"></script>
+  <script type="module">
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyCao776w2haJn2rlqxMoBfIo1jMuZNrH_8",
+  authDomain: "filesharing-d534c.firebaseapp.com",
+  projectId: "filesharing-d534c",
+  storageBucket: "filesharing-d534c.appspot.com",
+  messagingSenderId: "351215577513",
+  appId: "1:351215577513:web:6a2ca62f7aeaa99073bcb8",
+  measurementId: "G-PRSQMCHQB2"
+};
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const storageRef = firebase.storage().ref();
+
+    // Your other client-side JavaScript code here
+    document.getElementById("upload-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const file = event.target.file.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      fetch("/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Display file info
+          const fileInfo = document.getElementById("file-info");
+          fileInfo.innerHTML = `<p>File ID: ${data.fileId}</p>
+                                 <p>File URL: <a href="${data.fileUrl}" target="_blank">${data.fileUrl}</a></p>`;
+
+          // Generate and display QR code for sharing
+          const qrCode = document.getElementById("qr-code");
+          const qrCodeImg = document.createElement("img");
+          qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+            data.fileUrl
+          )}`;
+          qrCode.appendChild(qrCodeImg);
+        })
+        .catch((error) => console.error("Error:", error));
+    });
+  </script>
+  <script src="/src/first.js"></script>
+</body>
+</html>
